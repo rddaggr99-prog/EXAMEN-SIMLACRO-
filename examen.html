@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Examen Interactivo: Oratoria y Comunicación</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .smooth-shadow {
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen pb-12">
+
+    <!-- Header -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
+        <div class="max-w-5xl mx-auto px-4 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div class="flex items-center space-x-3">
+                <div class="bg-indigo-600 text-white p-2.5 rounded-xl shadow-md">
+                    <i class="fa-solid fa-graduation-cap text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg text-slate-900 leading-tight">Examen de Evaluación</h1>
+                    <p class="text-xs text-slate-500">Oratoria, Expresión Oral y Comunicación</p>
+                </div>
+            </div>
+
+            <div class="flex items-center space-x-6 text-sm font-medium">
+                <!-- Timer -->
+                <div class="flex items-center space-x-2 bg-slate-100 text-slate-700 px-3 py-1.5 rounded-lg border border-slate-200">
+                    <i class="fa-regular fa-clock text-indigo-600"></i>
+                    <span id="timer-display">00:00</span>
+                </div>
+                <!-- Progress counter -->
+                <div class="text-slate-600">
+                    Respondidas: <span id="answered-count" class="font-bold text-indigo-600">0</span>/20
+                </div>
+            </div>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="w-full bg-slate-100 h-1.5">
+            <div id="progress-bar" class="bg-indigo-600 h-1.5 transition-all duration-300 w-0"></div>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 mt-8">
+        <!-- Exam Intro Card -->
+        <div id="intro-card" class="bg-white rounded-2xl p-6 md:p-8 mb-8 border border-slate-200/80 smooth-shadow">
+            <div class="flex items-start space-x-4">
+                <div class="hidden sm:flex bg-indigo-50 p-4 rounded-2xl text-indigo-600">
+                    <i class="fa-solid fa-clipboard-check text-3xl"></i>
+                </div>
+                <div>
+                    <h2 class="text-xl font-bold text-slate-900 mb-2">Instrucciones del Examen</h2>
+                    <p class="text-slate-600 text-sm leading-relaxed mb-4">
+                        Este examen consta de **20 preguntas** divididas en dos secciones: 
+                        **10 preguntas abiertas** para desarrollo explicativo y **10 preguntas cerradas** (opción múltiple y verdadero/falso).
+                    </p>
+                    <ul class="text-xs text-slate-500 space-y-1 list-disc list-inside mb-4">
+                        <li>Las preguntas abiertas disponen de un botón para revisar la respuesta modelo o criterio de evaluación.</li>
+                        <li>Las preguntas cerradas se calificarán de forma automática al presionar "Finalizar Examen".</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quiz Form -->
+        <form id="quiz-form" onsubmit="event.preventDefault(); finishExam();">
+
+            <!-- SECTION 1: OPEN QUESTIONS -->
+            <div class="mb-10">
+                <div class="flex items-center space-x-3 mb-6 pb-2 border-b border-slate-200">
+                    <span class="bg-indigo-100 text-indigo-700 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Parte I</span>
+                    <h2 class="text-lg font-bold text-slate-800">Preguntas Abiertas (10 reactivos)</h2>
+                </div>
+
+                <div class="space-y-6">
+                    <!-- Q1 -->
+                    <div class="bg-white rounded-2xl p-6 border border-slate-200 smooth-shadow">
+                        <label for="q1" class="block font-semibold text-slate-900 mb-2">
+                            1. ¿Qué es la oratoria y cuál es su finalidad principal?
+                        </label>
+                        <textarea id="q1" name="q1" rows="3" oninput="updateProgress()" class="w-full p-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none text-sm text-slate-700 transition" placeholder="Escribe tu respuesta aquí..."></textarea>
+                        <div class="mt-3 flex justify-end">
+                            <button type="button" onclick="toggleCriterion('crit1')" class="text-xs text-indigo-600 hover:text-indigo-800 font-medium flex items-center space-x-1 focus:outline-none">
+                                <i class="fa-regular fa-lightbulb"></i>
+                                <span>Ver criterio de respuesta / modelo</span>
+                            </button>
+                        </div>
+                        <div id="crit1" class="hidden mt-3 p-3 bg-indigo-50 border border-indigo-100 rounded-xl text-xs text-indigo-900">
+                            <strong>Criterio:</strong> Debe mencionar que es el <em>arte de expresarse con elocuencia, fluidez y propiedad ante un público</em>, y su finalidad es <em>convencerlo o conmoverlo</em>.
+                        </div>
+                    </div>
+
+                    <!-- Q2 -->
+                    <div class="bg-white rounded-2xl p-6 border border-slate-200 smooth-shadow">
+                        <label for="q2" class="block font-semibold text-slate-900 mb-2">
+                            2. ¿Cuáles son los atributos de la expresión oral?
+                        </label>
+                        <textarea id="q2" name="q2" rows="3" oninput="updateProgress()" class="w-full p-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none text-sm text-slate-700 transition" placeholder="Escribe tu respuesta aquí..."></textarea>
+                        <div class="mt-3 flex justify-end">
+                            <button type="button" onclick="toggleCriterion('crit2')" class="text-xs text-indigo-600 hover:text-indigo-800 font-medium flex items-center space-x-1 focus:outline-none">
+                                <i class="fa-regular fa-lightbulb"></i>
+                                <span>Ver criterio de respuesta / modelo</span>
+                            </button>
+                        </div>
+                        <div id="crit2" class="hidden mt-3 p-3 bg-indigo-50 border border-indigo-100 rounded-xl text-xs text-indigo-900">
+                            <strong>Criterio:</strong> Debe incluir: <em>dicción, fluidez, coherencia, vocabulario y movimiento corporal</em>.
+                        </div>
+                    </div>
+
+                    <!-- Q3 -->
+                    <div class="bg-white rounded-2xl p-6 border border-slate-200 smooth-shadow">
+                        <label for="q3" class="block font-semibold text-slate-900 mb-2">
+                            3. Menciona y explica los 6 tipos de oratoria presentes en el tema (Pedagógica, Forense, Política, Empresarial, Sacra/Religiosa y Social/Ceremonial).
+                        </label>
+                        <textarea id="q3" name="q3" rows="4" oninput="updateProgress()" class="w-full p-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none text-sm text-slate-700 transition" placeholder="Escribe tu respuesta detallando los 6 tipos..."></textarea>
+                        <div class="mt-3 flex justify-end">
+                            <button type="button" onclick="toggleCriterion('crit3')" class="text-xs text-indigo-600 hover:text-indigo-800 font-medium flex items-center space-x-1 focus:outline-none">
+                                <i class="fa-regular fa-lightbulb"></i>
+                                <span>Ver criterio de respuesta / modelo</span>
+                            </button>
+                        </div>
+                        <div id="crit3" class="hidden mt-3 p-3 bg-indigo-50 border border-indigo-100 rounded-xl text-xs text-indigo-900">
+                            <strong>Criterio:</strong> 
+                            <ul class="list-disc list-inside mt-1 space-y-0.5">
+                                <li><strong>Pedagógica:</strong> Enseñar y transmitir.</li>
+                                <li><strong>Forense/Judicial:</strong> Buscar justicia (abogados y jueces).</li>
+                                <li><strong>Política:</strong> Debatír e influir (Congreso).</li>
+                                <li><strong>Empresarial:</strong> Vender y convencer (marketing).</li>
+                                <li><strong>Sacra o religiosa:</strong> Asuntos religiosos.</li>
+                                <li><strong>Social o ceremonial:</strong> Actos solemnes o emocionales (bodas).</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Q4 -->
+                    <div class="bg-white rounded-2xl p-6 border border-slate-200 smooth-shadow">
+                        <label for="q4" class="block font-semibold text-slate-900 mb-2">
+                            4. ¿Qué es el pensamiento crítico y para qué sirve?
+                        </label>
+                        <textarea id="q4" name="q4" rows="3" oninput="updateProgress()" class="w-full p-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none text-sm text-slate-700 transition" placeholder="Escribe tu respuesta aquí..."></textarea>
+                        <div class="mt-3 flex justify-end">
+                            <button type="button" onclick="toggleCriterion('crit4')" class="text-xs text-indigo-600 hover:text-indigo-800 font-medium flex items-center space-x-1 focus:outline-none">
+                                <i class="fa-regular fa-lightbulb"></i>
+                                <span>Ver criterio de respuesta / modelo</span>
+                            </button>
+                        </div>
+                        <div id="crit4" class="hidden mt-3 p-3 bg-indigo-50 border border-indigo-100 rounded-xl text-xs text-indigo-900">
+                            <strong>Criterio:</strong> Capacidad razonable de <em>analizar información, ideas y pensamientos reflexivamente</em> para <em>distinguir lo falso de lo verdadero</em> y así poder <em>emitir un juicio propio fundamentado</em>.
+                        </div>
+                    </div>
+
+                    <!-- Q5 -->
+                    <div class="bg-white rounded-2xl p-6 border border-slate-200 smooth-shadow">
+                        <label for="q5" class="block font-semibold text-slate-900 mb-2">
+                            5. Define qué es la comunicación y cuáles son los dos participantes principales.
+                        </label>
+                        <textarea id="q5" name="q5" rows="3" oninput="updateProgress()" class="w-full p-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none text-sm text-slate-700 transition" placeholder="Escribe tu respuesta aquí..."></textarea>
+                        <div class="mt-3 flex justify-end">
+                            <button type="button" onclick="toggleCriterion('crit5')" class="text-xs text-indigo-600 hover:text-indigo-800 font-medium flex items-center space-x-1 focus:outline-none">
+                                <i class="fa-regular fa-lightbulb"></i>
+                                <span>Ver criterio de respuesta / modelo</span>
+                            </button>
+                        </div>
+                        <div id="crit5" class="hidden mt-3 p-3 bg-indigo-50 border border-indigo-100 rounded-xl text-xs text-indigo-900">
+                            <strong>Criterio:</strong> Es el <em>proceso de transmisión de ideas y emociones</em> que ocurre entre un <em>emisor</em> y un <em>receptor</em>.
+                        </div>
+                    </div>
+
+                    <!-- Q6 -->
+                    <div class="bg-white rounded-2xl p-6 border border-slate-200 smooth-shadow">
+                        <label for="q6" class="block font-semibold text-slate-900 mb-2">
+                            6. ¿Qué características definen a un buen orador según las notas?
+                        </label>
+                        <textarea id="q6" name="q6" rows="3" oninput="updateProgress()" class="w-full p-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none text-sm text-slate-700 transition" placeholder="Escribe tu respuesta aquí..."></textarea>
+                        <div class="mt-3 flex justify-end">
+                            <button type="button" onclick="toggleCriterion('crit6')" class="text-xs text-indigo-600 hover:text-indigo-800 font-medium flex items-center space-x-1 focus:outline-none">
+                                <i class="fa-regular fa-lightbulb"></i>
+                                <span>Ver criterio de respuesta / modelo</span>
+                            </button>
+                        </div>
+                        <div id="crit6" class="hidden mt-3 p-3 bg-indigo-50 border border-indigo-100 rounded-xl text-xs text-indigo-900">
+                            <strong>Criterio:</strong> Tiene en cuenta a su <em>audiencia</em>, <em>planifica su discurso</em>, es <em>ético</em>, <em>congruente</em> y <em>memoriza aproximadamente el 90% de su tema</em>.
+                        </div>
+                    </div>
+
+                    <!-- Q7 -->
+                    <div class="bg-white rounded-2xl p-6 border border-slate-200 smooth-shadow">
+                        <label for="q7" class="block font-semibold text-slate-900 mb-2">
+                            7. Explica las diferencias entre las condiciones objetivas y subjetivas del entorno.
+                        </label>
+                        <textarea id="q7" name="q7" rows="3" oninput="updateProgress()" class="w-full p-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none text-sm text-slate-700 transition" placeholder="Escribe tu respuesta aquí..."></textarea>
+                        <div class="mt-3 flex justify-end">
+                            <button type="button" onclick="toggleCriterion('crit7')" class="text-xs text-indigo-600 hover:text-indigo-800 font-medium flex items-center space-x-1 focus:outline-none">
+                                <i class="fa-regular fa-lightbulb"></i>
+                                <span>Ver criterio de respuesta / modelo</span>
+                            </button>
+                        </div>
+                        <div id="crit7" class="hidden mt-3 p-3 bg-indigo-50 border border-indigo-100 rounded-xl text-xs text-indigo-900">
+                            <strong>Criterio:</strong> 
+                            <em>Objetivas:</em> hechos materiales del entorno. <br>
+                            <em>Subjetivas:</em> aspectos internos del sujeto.
+                        </div>
+                    </div>
+
+                    <!-- Q8 -->
+                    <div class="bg-white rounded-2xl p-6 border border-slate-200 smooth-shadow">
+                        <label for="q8" class="block font-semibold text-slate-900 mb-2">
+                            8. ¿Qué es la retroalimentación en la comunicación y en qué dirección fluye?
+                        </label>
+                        <textarea id="q8" name="q8" rows="3" oninput="updateProgress()" class="w-full p-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none text-sm text-slate-700 transition" placeholder="Escribe tu respuesta aquí..."></textarea>
+                        <div class="mt-3 flex justify-end">
+                            <button type="button" onclick="toggleCriterion('crit8')" class="text-xs text-indigo-600 hover:text-indigo-800 font-medium flex items-center space-x-1 focus:outline-none">
+                                <i class="fa-regular fa-lightbulb"></i>
+                                <span>Ver criterio de respuesta / modelo</span>
+                            </button>
+                        </div>
+                        <div id="crit8" class="hidden mt-3 p-3 bg-indigo-50 border border-indigo-100 rounded-xl text-xs text-indigo-900">
+                            <strong>Criterio:</strong> Es la respuesta del mensaje que va emitida específicamente <em>del Receptor al Emisor</em>.
+                        </div>
+                    </div>
+
+                    <!-- Q9 -->
+                    <div class="bg-white rounded-2xl p-6 border border-slate-200 smooth-shadow">
+                        <label for="q9" class="block font-semibold text-slate-900 mb-2">
+                            9. Explica la estructura del lenguaje (verbal y no verbal).
+                        </label>
+                        <textarea id="q9" name="q9" rows="3" oninput="updateProgress()" class="w-full p-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none text-sm text-slate-700 transition" placeholder="Escribe tu respuesta aquí..."></textarea>
+                        <div class="mt-3 flex justify-end">
+                            <button type="button" onclick="toggleCriterion('crit9')" class="text-xs text-indigo-600 hover:text-indigo-800 font-medium flex items-center space-x-1 focus:outline-none">
+                                <i class="fa-regular fa-lightbulb"></i>
+                                <span>Ver criterio de respuesta / modelo</span>
+                            </button>
+                        </div>
+                        <div id="crit9" class="hidden mt-3 p-3 bg-indigo-50 border border-indigo-100 rounded-xl text-xs text-indigo-900">
+                            <strong>Criterio:</strong> El lenguaje Verbal se divide en <em>Oral</em> y <em>Escrito</em>. El No Verbal tiene la <em>misma importancia y peso que el verbal</em>.
+                        </div>
+                    </div>
+
+                    <!-- Q10 -->
+                    <div class="bg-white rounded-2xl p-6 border border-slate-200 smooth-shadow">
+                        <label for="q10" class="block font-semibold text-slate-900 mb-2">
+                            10. Define el concepto de "Dicción" y el de "Semántica".
+                        </label>
+                        <textarea id="q10" name="q10" rows="3" oninput="updateProgress()" class="w-full p-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none text-sm text-slate-700 transition" placeholder="Escribe tu respuesta aquí..."></textarea>
+                        <div class="mt-3 flex justify-end">
+                            <button type="button" onclick="toggleCriterion('crit10')" class="text-xs text-indigo-600 hover:text-indigo-800 font-medium flex items-center space-x-1 focus:outline-none">
+                                <i class="fa-regular fa-lightbulb"></i>
+                                <span>Ver criterio de respuesta / modelo</span>
+                            </button>
+                        </div>
+                        <div id="crit10" class="hidden mt-3 p-3 bg-indigo-50 border border-indigo-100 rounded-xl text-xs text-indigo-900">
+                            <strong>Criterio:</strong> 
+                            <em>Dicción:</em> Pronunciación correcta de las palabras sin errores. <br>
+                            <em>Semántica:</em> Significado de las palabras.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 2: CLOSED QUESTIONS -->
+            <div class="mb-10">
+                <div class="flex items-center space-x-3 mb-6 pb-2 border-b border-slate-200">
+                    <span class="bg-emerald-100 text-emerald-700 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Parte II</span>
+                    <h2 class="text-lg font-bold text-slate-800">Preguntas Cerradas (10 reactivos - Auto-evaluadas)</h2>
+                </div>
+
+                <div class="space-y-6">
+                    <!-- Q11 -->
+                    <div id="card-q11" class="bg-white rounded-2xl p-6 border border-slate-200 smooth-shadow transition">
+                        <p class="font-semibold text-slate-900 mb-3">11. ¿Dónde nació la oratoria?</p>
+                        <div class="space-y-2 text-sm text-slate-700">
+                            <label class="flex items-center space-x-3 p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition">
+                                <input type="radio" name="q11" value="a" onchange="updateProgress()" class="w-4 h-4 text-indigo-600">
+                                <span>a) En Roma</span>
+                            </label>
+                            <label class="flex items-center space-x-3 p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition">
+                                <input type="radio" name="q11" value="b" onchange="updateProgress()" class="w-4 h-4 text-indigo-600">
+                                <span>b) En Grecia con los sicilianos</span>
+                            </label>
+                            <label class="flex items-center space-x-3 p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition">
+                                <input type="radio" name="q11" value="c" onchange="updateProgress()" class="w-4 h-4 text-indigo-600">
+                                <span>c) En España</span>
+                            </label>
+                        </div>
+                        <div id="feedback-q11" class="hidden mt-3 text-xs font-semibold"></div>
+                    </div>
+
+                    <!-- Q12 -->
+                    <div id="card-q12" class="bg-white rounded-2xl p-6 border border-slate-200 smooth-shadow transition">
+                        <p class="font-semibold text-slate-900 mb-3">12. Personaje histórico que perfeccionó la oratoria en la República Romana:</p>
+                        <div class="space-y-2 text-sm text-slate-700">
+                            <label class="flex items-center space-x-3 p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition">
+                                <input type="radio" name="q12" value="a" onchange="updateProgress()" class="w-4 h-4 text-indigo-600">
+                                <span>a) Sócrates</span>
+                            </label>
+                            <label class="flex items-center space-x-3 p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition">
+                                <input type="radio" name="q12" value="b" onchange="updateProgress()" class="w-4 h-4 text-indigo-600">
+                                <span>b) Demóstenes</span>
+                            </label>
+                            <label class="flex items-center space-x-3 p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition">
+                                <input type="radio" name="q12" value="c" onchange="updateProgress()" class="w-4 h-4 text-indigo-600">
+                                <span>c) Cicerón</span>
+                            </label>
+                        </div>
+                        <div id="feedback-q12" class="hidden mt-3 text-xs font-semibold"></div>
+                    </div>
+
+                    <!-- Q13 -->
+                    <div id="card-q13" class="bg-white rounded-2xl p-6 border border-slate-200 smooth-shadow transition">
+                        <p class="font-semibold text-slate-900 mb-3">13. ¿Quién es considerado el mejor orador griego?</p>
+                        <div class="space-y-2 text-sm text-slate-700">
+                            <label class="flex items-center space-x-3 p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition">
+                                <input type="radio" name="q13" value="a" onchange="updateProgress()" class="w-4 h-4 text-indigo-600">
+                                <span>a) Demóstenes</span>
+                            </label>
+                            <label class="flex items-center space-x-3 p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition">
+                                <input type="radio" name="q13" value="b" onchange="updateProgress()" class="w-4 h-4 text-indigo-600">
+                                <span>b) Cicerón</span>
+                            </label>
+                            <label class="flex items-center space-x-3 p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition">
+                                <input type="radio" name="q13" value="c" onchange="updateProgress()" class="w-4 h-4 text-indigo-600">
+                                <span>c) Sócrates</span>
+                            </label>
+                        </div>
+                        <div id="feedback-q13" class="hidden mt-3 text-xs font-semibold"></div>
+                    </div>
+
+                    <!-- Q14 -->
+                    <div id="card-q14" class="bg-white rounded-2xl p-6 border border-slate-200 smooth-shadow transition">
+                        <p class="font-semibold text-slate-900 mb-3">14. ¿Qué porcentaje del tema memoriza aproximadamente un buen orador?</p>
+                        <div class="space-y-2 text-sm text-slate-700">
+                            <label class="flex items-center space-x-3 p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition">
+                                <input type="radio" name="q14" value="a" onchange="updateProgress()" class="w-4 h-4 text-indigo-600">
+                                <span>a) 50%</span>
+                            </label>
+                            <label class="flex items-center space-x-3 p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition">
+                                <input type="radio" name="q14" value="b" onchange="updateProgress()" class="w-4 h-4 text-indigo-600">
+                                <span>b) 70%</span>
+                            </label>
+                            <label class="flex items-center space-x-3 p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition">
+                                <input type="radio" name="q14" value="c" onchange="updateProgress()" class="w-4 h-4 text-indigo-600">
+                                <span>c) 90%</span>
+                            </label>
+                        </div>
+                        <div id="feedback-q14" class="hidden mt-3 text-xs font-semibold"></div>
+                    </div>
+
+                    <!-- Q15 -->
+                    <div id="card-q15" class="bg-white rounded-2xl p-6 border border-slate-200 smooth-shadow transition">
+                        <p class="font-semibold text-slate-900 mb-3">15. Tipo de oratoria cuyo objetivo es "Vender y convencer (marketing)":</p>
+                        <div class="space-y-2 text-sm text-slate-700">
+                            <label class="flex items-center space-x-3 p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition">
+                                <input type="radio" name="q15" value="a" onchange="updateProgress()" class="w-4 h-4 text-indigo-600">
+                                <span>a) Oratoria Empresarial</span>
+                            </label>
+                            <label class="flex items-center space-x-3 p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition">
+                                <input type="radio" name="q15" value="b" onchange="updateProgress()" class="w-4 h-4 text-indigo-600">
+                                <span>b) Oratoria Política</span>
+                            </label>
+                            <label class="flex items-center space-x-3 p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition">
+                                <input type="radio" name="q15" value="c" onchange="updateProgress()" class="w-4 h-4 text-indigo-600">
+                                <span>c) Oratoria Social</span>
+                            </label>
+                        </div>
+                        <div id="feedback-q15" class="hidden mt-3 text-xs font-semibold"></div>
+                    </div>
+
+                    <!-- Q16 -->
+                    <div id="card-q16" class="bg-white rounded-2xl p-6 border border-slate-200 smooth-shadow transition">
+                        <p class="font-semibold text-slate-900 mb-3">16. Tipo de oratoria enfocada en debatír e influir en espacios como el Congreso:</p>
+                        <div class="space-y-2 text-sm text-slate-700">
+                            <label class="flex items-center space-x-3 p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition">
+                                <input type="radio" name="q16" value="a" onchange="updateProgress()" class="w-4 h-4 text-indigo-600">
+                                <span>a) Oratoria Sacra</span>
+                            </label>
+                            <label class="flex items-center space-x-3 p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition">
+                                <input type="radio" name="q16" value="b" onchange="updateProgress()" class="w-4 h-4 text-indigo-600">
+                                <span>b) Oratoria Política</span>
+                            </label>
+                            <label class="flex items-center space-x-3 p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition">
+                                <input type="radio" name="q16" value="c" onchange="updateProgress()" class="w-4 h-4 text-indigo-600">
+                                <span>c) Oratoria Forense</span>
+                            </label>
+                        </div>
+                        <div id="feedback-q16" class="hidden mt-3 text-xs font-semibold"></div>
+                    </div>
+
+                    <!-- Q17 -->
+                    <div id="card-q17" class="bg-white rounded-2xl p-6 border border-slate-200 smooth-shadow transition">
+                        <p class="font-semibold text-slate-900 mb-3">17. ¿Cómo se define el conjunto de normas jurídicas que regulan la conducta externa del ser humano en sociedad?</p>
+                        <div class="space-y-2 text-sm text-slate-700">
+                            <label class="flex items-center space-x-3 p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition">
+                                <input type="radio" name="q17" value="a" onchange="updateProgress()" class="w-4 h-4 text-indigo-600">
+                                <span>a) Condiciones del entorno</span>
+                            </label>
+                            <label class="flex items-center space-x-3 p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition">
+                                <input type="radio" name="q17" value="b" onchange="updateProgress()" class="w-4 h-4 text-indigo-600">
+                                <span>b) Marco normativo / Derecho</span>
+                            </label>
+                            <label class="flex items-center space-x-3 p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition">
+                                <input type="radio" name="q17" value="c" onchange="updateProgress()" class="w-4 h-4 text-indigo-600">
+                                <span>c) Semántica</span>
+                            </label>
+                        </div>
+                        <div id="feedback-q17" class="hidden mt-3 text-xs font-semibold"></div>
+                    </div>
+
+                    <!-- Q18 -->
+                    <div id="card-q18" class="bg-white rounded-2xl p-6 border border-slate-200 smooth-shadow transition">
+                        <p class="font-semibold text-slate-900 mb-3">18. Verdadero o Falso: El discurso se define como una narración oral premeditada que se expresa de manera pública.</p>
+                        <div class="space-y-2 text-sm text-slate-700">
+                            <label class="flex items-center space-x-3 p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition">
+                                <input type="radio" name="q18" value="v" onchange="updateProgress()" class="w-4 h-4 text-indigo-600">
+                                <span>Verdadero</span>
+                            </label>
+                            <label class="flex items-center space-x-3 p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition">
+                                <input type="radio" name="q18" value="f" onchange="updateProgress()" class="w-4 h-4 text-indigo-600">
+                                <span>Falso</span>
+                            </label>
+                        </div>
+                        <div id="feedback-q18" class="hidden mt-3 text-xs font-semibold"></div>
+                    </div>
+
+                    <!-- Q19 -->
+                    <div id="card-q19" class="bg-white rounded-2xl p-6 border border-slate-200 smooth-shadow transition">
+                        <p class="font-semibold text-slate-900 mb-3">19. ¿Cuáles son los tres elementos que obstaculizan el proceso comunicativo?</p>
+                        <div class="space-y-2 text-sm text-slate-700">
+                            <label class="flex items-center space-x-3 p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition">
+                                <input type="radio" name="q19" value="a" onchange="updateProgress()" class="w-4 h-4 text-indigo-600">
+                                <span>a) Emisor, Receptor y Canal</span>
+                            </label>
+                            <label class="flex items-center space-x-3 p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition">
+                                <input type="radio" name="q19" value="b" onchange="updateProgress()" class="w-4 h-4 text-indigo-600">
+                                <span>b) Interferencia, Ruido y Barrera</span>
+                            </label>
+                            <label class="flex items-center space-x-3 p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition">
+                                <input type="radio" name="q19" value="c" onchange="updateProgress()" class="w-4 h-4 text-indigo-600">
+                                <span>c) Código, Mensaje y Contexto</span>
+                            </label>
+                        </div>
+                        <div id="feedback-q19" class="hidden mt-3 text-xs font-semibold"></div>
+                    </div>
+
+                    <!-- Q20 -->
+                    <div id="card-q20" class="bg-white rounded-2xl p-6 border border-slate-200 smooth-shadow transition">
+                        <p class="font-semibold text-slate-900 mb-3">20. Verdadero o Falso: La disertación se define simplemente como "hablar en público".</p>
+                        <div class="space-y-2 text-sm text-slate-700">
+                            <label class="flex items-center space-x-3 p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition">
+                                <input type="radio" name="q20" value="v" onchange="updateProgress()" class="w-4 h-4 text-indigo-600">
+                                <span>Verdadero</span>
+                            </label>
+                            <label class="flex items-center space-x-3 p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition">
+                                <input type="radio" name="q20" value="f" onchange="updateProgress()" class="w-4 h-4 text-indigo-600">
+                                <span>Falso</span>
+                            </label>
+                        </div>
+                        <div id="feedback-q20" class="hidden mt-3 text-xs font-semibold"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Submit Controls -->
+            <div class="flex flex-col sm:flex-row justify-between items-center gap-4 bg-white p-6 rounded-2xl border border-slate-200 smooth-shadow">
+                <button type="button" onclick="resetQuiz()" class="w-full sm:w-auto px-5 py-2.5 border border-slate-300 text-slate-700 hover:bg-slate-100 rounded-xl font-medium text-sm transition flex items-center justify-center space-x-2">
+                    <i class="fa-solid fa-rotate-left"></i>
+                    <span>Reiniciar Examen</span>
+                </button>
+
+                <button type="submit" class="w-full sm:w-auto px-8 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-semibold text-sm transition shadow-md shadow-indigo-200 flex items-center justify-center space-x-2">
+                    <i class="fa-solid fa-paper-plane"></i>
+                    <span>Finalizar y Evaluar Examen</span>
+                </button>
+            </div>
+        </form>
+
+        <!-- Results Modal / Box -->
+        <div id="results-card" class="hidden bg-white rounded-2xl p-8 my-8 border border-slate-200 smooth-shadow">
+            <div class="text-center max-w-lg mx-auto">
+                <div class="inline-flex bg-indigo-100 text-indigo-600 p-4 rounded-full mb-4">
+                    <i class="fa-solid fa-trophy text-3xl"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-slate-900 mb-1">¡Examen Concluido!</h2>
+                <p class="text-sm text-slate-500 mb-6">Resultados de la Sección Cerrada (Auto-evaluables)</p>
+
+                <div class="bg-slate-50 border border-slate-200 rounded-2xl p-6 mb-6">
+                    <div class="text-4xl font-extrabold text-indigo-600 mb-1" id="score-text">0 / 10</div>
+                    <div class="text-xs text-slate-500 uppercase tracking-wider font-semibold">Puntuación en Preguntas Cerradas</div>
+                    <p id="score-message" class="text-sm text-slate-700 mt-3"></p>
+                </div>
+
+                <div class="text-left bg-amber-50 border border-amber-200 rounded-xl p-4 text-xs text-amber-900 mb-6">
+                    <i class="fa-solid fa-circle-info text-amber-600 mr-1"></i>
+                    <strong>Nota:</strong> Las 10 preguntas abiertas deben revisarse de forma manual comparando tu texto con los botones de <em>"Criterio de respuesta / modelo"</em>.
+                </div>
+
+                <div class="flex flex-col sm:flex-row justify-center gap-3">
+                    <button onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="px-5 py-2.5 bg-slate-100 text-slate-700 rounded-xl text-sm font-medium hover:bg-slate-200 transition">
+                        Revisar mis respuestas
+                    </button>
+                    <button onclick="resetQuiz()" class="px-5 py-2.5 bg-indigo-600 text-white rounded-xl text-sm font-medium hover:bg-indigo-700 transition">
+                        Intentar de nuevo
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Correct answers key for closed questions
+        const answersKey = {
+            q11: "b",
+            q12: "c",
+            q13: "a",
+            q14: "c",
+            q15: "a",
+            q16: "b",
+            q17: "b",
+            q18: "v",
+            q19: "b",
+            q20: "v"
+        };
+
+        // Timer logic
+        let seconds = 0;
+        let timerInterval = setInterval(() => {
+            seconds++;
+            const mins = Math.floor(seconds / 60).toString().padStart(2, '0');
+            const secs = (seconds % 60).toString().padStart(2, '0');
+            document.getElementById('timer-display').innerText = `${mins}:${secs}`;
+        }, 1000);
+
+        // Toggle Criterion visibility
+        function toggleCriterion(id) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.classList.toggle('hidden');
+            }
+        }
+
+        // Update progress bar
+        function updateProgress() {
+            let answered = 0;
+
+            // Check open questions (1-10)
+            for (let i = 1; i <= 10; i++) {
+                const text = document.getElementById(`q${i}`)?.value.trim();
+                if (text && text.length > 0) answered++;
+            }
+
+            // Check closed questions (11-20)
+            for (let i = 11; i <= 20; i++) {
+                const radios = document.getElementsByName(`q${i}`);
+                let checked = false;
+                for (let r of radios) {
+                    if (r.checked) {
+                        checked = true;
+                        break;
+                    }
+                }
+                if (checked) answered++;
+            }
+
+            document.getElementById('answered-count').innerText = answered;
+            const percentage = (answered / 20) * 100;
+            document.getElementById('progress-bar').style.width = `${percentage}%`;
+        }
+
+        // Evaluate Exam
+        function finishExam() {
+            let score = 0;
+
+            // Check answers for questions 11 to 20
+            for (let i = 11; i <= 20; i++) {
+                const qName = `q${i}`;
+                const selected = document.querySelector(`input[name="${qName}"]:checked`);
+                const card = document.getElementById(`card-${qName}`);
+                const feedback = document.getElementById(`feedback-${qName}`);
+                
+                feedback.classList.remove('hidden', 'text-emerald-600', 'text-rose-600');
+
+                if (selected && selected.value === answersKey[qName]) {
+                    score++;
+                    card.classList.add('border-emerald-300', 'bg-emerald-50/30');
+                    card.classList.remove('border-rose-300', 'bg-rose-50/30');
+                    feedback.classList.add('text-emerald-600');
+                    feedback.innerHTML = '<i class="fa-solid fa-circle-check mr-1"></i> Respuesta Correcta';
+                } else {
+                    card.classList.add('border-rose-300', 'bg-rose-50/30');
+                    card.classList.remove('border-emerald-300', 'bg-emerald-50/30');
+                    feedback.classList.add('text-rose-600');
+                    feedback.innerHTML = `<i class="fa-solid fa-circle-xmark mr-1"></i> Respuesta Incorrecta.`;
+                }
+            }
+
+            // Display Results
+            const scoreText = document.getElementById('score-text');
+            const scoreMsg = document.getElementById('score-message');
+            scoreText.innerText = `${score} / 10`;
+
+            if (score === 10) {
+                scoreMsg.innerText = "¡Excelente trabajo! Tienes un dominio total del material cerrado.";
+            } else if (score >= 7) {
+                scoreMsg.innerText = "¡Buen trabajo! Repasa únicamente los conceptos donde tuviste dudas.";
+            } else {
+                scoreMsg.innerText = "Te sugerimos repasar nuevamente tus apuntes para afianzar los conceptos.";
+            }
+
+            const resultsCard = document.getElementById('results-card');
+            resultsCard.classList.remove('hidden');
+            resultsCard.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Reset Quiz
+        function resetQuiz() {
+            document.getElementById('quiz-form').reset();
+            
+            // Clear styles
+            for (let i = 11; i <= 20; i++) {
+                const card = document.getElementById(`card-q${i}`);
+                const feedback = document.getElementById(`feedback-q${i}`);
+                if (card) {
+                    card.classList.remove('border-emerald-300', 'bg-emerald-50/30', 'border-rose-300', 'bg-rose-50/30');
+                }
+                if (feedback) {
+                    feedback.classList.add('hidden');
+                }
+            }
+
+            // Hide open criteria
+            for (let i = 1; i <= 10; i++) {
+                const crit = document.getElementById(`crit${i}`);
+                if (crit) crit.classList.add('hidden');
+            }
+
+            // Reset score modal
+            document.getElementById('results-card').classList.add('hidden');
+
+            // Reset timer
+            seconds = 0;
+            
+            updateProgress();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
